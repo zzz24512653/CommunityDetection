@@ -1,6 +1,6 @@
 import networkx as nx
-import math
 import random
+from util.similarity import cal_similarity
 
 '''
 paper : <<SCAN:A Structural Clustering Algorithm for Networks>>
@@ -13,15 +13,8 @@ class SCAN():
         self._epsilon = epsilon
         self._mu = mu
 
-    def cal_similarity(self, node_i, node_j):
-        s1 = set(self._G.neighbors(node_i))
-        s1.add(node_i)
-        s2 = set(self._G.neighbors(node_j))
-        s2.add(node_j)
-        return len(s1 & s2) / math.sqrt(len(s1) * len(s2))
-
     def get_epsilon_neighbor(self, node):
-        return [neighbor for neighbor in self._G.neighbors(node) if self.cal_similarity(node, neighbor) >= self._epsilon]        
+        return [neighbor for neighbor in self._G.neighbors(node) if cal_similarity(self._G,node, neighbor) >= self._epsilon]        
 
     def is_core(self, node):
         return len(self.get_epsilon_neighbor(node)) >= self._mu
