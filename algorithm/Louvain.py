@@ -23,15 +23,15 @@ class Vertex():
         self._vid = vid
         self._cid = cid
         self._nodes = nodes
-        self._kin = k_in
+        self._kin = k_in  #结点内部的边的权重
 
 class Louvain():
     
     def __init__(self, G):
         self._G = G
-        self._m = 0
-        self._cid_vertices = {}
-        self._vid_vertex = {}
+        self._m = 0　　#边数量
+        self._cid_vertices = {}　　#需维护的关于社区的信息(社区编号,其中包含的结点编号的集合)
+        self._vid_vertex = {}　　#需维护的关于结点的信息(结点编号，相应的Vertex实例)
         for vid in self._G.keys():
             self._cid_vertices[vid] = set([vid])
             self._vid_vertex[vid] = Vertex(vid, vid, set([vid]))
@@ -39,11 +39,11 @@ class Louvain():
         
     def first_stage(self):
         print '---first stage---'
-        mod_inc = False
+        mod_inc = False  #用于判断算法是否可终止
         visit_sequence = self._G.keys()
         random.shuffle(visit_sequence)
         while True:
-            can_stop = True
+            can_stop = True　　#第一阶段是否可终止
             for v_vid in visit_sequence:
                 v_cid = self._vid_vertex[v_vid]._cid
                 k_v = sum(self._G[v_vid].values()) + self._vid_vertex[v_vid]._kin
@@ -57,7 +57,7 @@ class Louvain():
                         if w_cid == v_cid:
                             tot -= k_v
                         k_v_in = sum([v for k,v in self._G[v_vid].items() if k in self._cid_vertices[w_cid]])
-                        delta_Q = k_v_in - k_v * tot / self._m
+                        delta_Q = k_v_in - k_v * tot / self._m　　#由于只需要知道delta_Q的正负，所以少乘了1/(2*self._m)
                         cid_Q[w_cid] = delta_Q
                     
                 cid,max_delta_Q = sorted(cid_Q.items(),key=lambda item:item[1],reverse=True)[0]
