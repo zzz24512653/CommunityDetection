@@ -1,4 +1,8 @@
 import networkx as nx
+
+import sys
+sys.path.append('../')
+
 from util.graph_helper import load_graph
 from util.graph_helper import clone_graph
 from util.modularity import cal_Q
@@ -17,7 +21,7 @@ class GN:
         while len(self._G.edges()) != 0:
             edge = max(nx.edge_betweenness(self._G).items(),key=lambda item:item[1])[0]
             self._G.remove_edge(edge[0], edge[1])
-            components = list(nx.connected_components(self._G))
+            components = [list(c) for c in list(nx.connected_components(self._G))]
             if len(components) != len(self._partition):
                 cur_Q = cal_Q(components, self._G_cloned)
                 if cur_Q > self._max_Q:
