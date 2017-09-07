@@ -32,7 +32,8 @@ class SCAN():
             neighbors = self._G.neighbors(node)
             neighbor_community = set()
             for neighbor in neighbors:
-                neighbor_community.add(node_community[neighbor])
+                if neighbor in node_community:
+                    neighbor_community.add(node_community[neighbor])
             if len(neighbor_community) > 1:
                 hubs.append(node)
             else:
